@@ -3,15 +3,15 @@ setlocal enabledelayedexpansion
 
 ::Deck will be writting to a Deck.bat file in the following format...
 
-:: set "card1[NAME]=********"
-:: set "card1[ID]=******"
-:: set "card1[SUIT]=******"
-:: set "card1[VALUE]=******"
-:: set "card1[POWER]=******"
+:: set "card1.name=********"
+:: set "card1.id=******"
+:: set "card1.suit=******"
+:: set "card1.value=******"
+:: set "card1.power=******"
 
 ::Arguements Below (BOTH REQUIRED)
 ::1 - Modifier (Currently have Normal, War, Golf, Battle)
-::2 - Path to install deck
+::2 - Path to folder for the deck to be installed
 
 set "mod=%~1"
 set "path=%~2"
@@ -20,25 +20,33 @@ set /a jokerCounter=0
 set /a blankCounter=0
 
 if /i "%mod%"=="Normal" (
-set /a maxNum=52
+	set /a maxNum=52
 )
 
 if /i "%mod%"=="War" (
-set /a maxNum=52
+	set /a maxNum=52
 )
 
 if /i "%mod%"=="Golf" (
-set /a maxNum=55
+	set /a maxNum=55
 )
 
 if /i "%mod%"=="Battle" (
-set /a maxNum=54
+	set /a maxNum=54
 )
 
 set /a ran=%random%
 break>%path%%ran%AlreadyChosen.txt
 
 break>%path%Deck.bat
+break>%path%DiscardPile.bat
+
+echo @echo off >>%path%Deck.bat
+echo @echo off >>%path%DiscardPile.bat
+
+echo. >>%path%Deck.bat
+echo. >>%path%DiscardPile.bat
+
 cls
 echo ========================
 echo Shuffling Cards
@@ -49,7 +57,7 @@ echo ========================
 
 for %%a in (Hearts Clubs Spades Diamonds) do call :Create "%%a"
 echo.  >>%path%Deck.bat
-timeout /t 2 >nul
+echo set /a discardCounter=0 >>%gameLog%
 del %path%%ran%AlreadyChosen.txt
 exit /b 0
 
@@ -82,13 +90,13 @@ if "%id%"=="Blank" goto BlankCheck
 goto loop
 
 :JokerCheck
-set /a jokerCounter+=1
-if "%jokerCounter%" GTR "2" goto EndCombine
+	set /a jokerCounter+=1
+	if "%jokerCounter%" GTR "2" goto EndCombine
 goto loop
 
 :BlankCheck
-set /a blankCounter+=1
-if "%blankCounter%" GTR "1" goto EndCombine
+	set /a blankCounter+=1
+	if "%blankCounter%" GTR "1" goto EndCombine
 goto loop
 
 :loop
@@ -111,79 +119,79 @@ if "%id%"=="Blank" (
 	goto EndCombine
 )
 
-echo set "card%count%[NAME]=!id!_of_!suitArg!" >>%path%Deck.bat
-echo set "card%count%[ID]=!id!" >>%path%Deck.bat
-echo set "card%count%[SUIT]=!suitArg!" >>%path%Deck.bat
+echo set "card%count%.name=!id!_of_!suitArg!" >>%path%Deck.bat
+echo set "card%count%.id=!id!" >>%path%Deck.bat
+echo set "card%count%.suit=!suitArg!" >>%path%Deck.bat
 
 if /i "%mod%"=="Normal" (
 
-	if !id!==2 echo set /a card%count%[VALUE]=2 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==3 echo set /a card%count%[VALUE]=3 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==4 echo set /a card%count%[VALUE]=4 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==5 echo set /a card%count%[VALUE]=5 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==6 echo set /a card%count%[VALUE]=6 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==7 echo set /a card%count%[VALUE]=7 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==8 echo set /a card%count%[VALUE]=8 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==9 echo set /a card%count%[VALUE]=9 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==10 echo set /a card%count%[VALUE]=10 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==Jack echo set /a card%count%[VALUE]=10 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==Queen echo set /a card%count%[VALUE]=10 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==King echo set /a card%count%[VALUE]=10 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==Ace echo set /a card%count%[VALUE]=11 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
+	if !id!==2 echo set /a card%count%.value=2 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==3 echo set /a card%count%.value=3 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==4 echo set /a card%count%.value=4 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==5 echo set /a card%count%.value=5 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==6 echo set /a card%count%.value=6 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==7 echo set /a card%count%.value=7 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==8 echo set /a card%count%.value=8 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==9 echo set /a card%count%.value=9 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==10 echo set /a card%count%.value=10 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==Jack echo set /a card%count%.value=10 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==Queen echo set /a card%count%.value=10 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==King echo set /a card%count%.value=10 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==Ace echo set /a card%count%.value=11 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
 
 )
 
 if /i "%mod%"=="War" (
 
-	if !id!==2 echo set /a card%count%[VALUE]=2 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==3 echo set /a card%count%[VALUE]=3 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==4 echo set /a card%count%[VALUE]=4 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==5 echo set /a card%count%[VALUE]=5 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==6 echo set /a card%count%[VALUE]=6 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==7 echo set /a card%count%[VALUE]=7 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==8 echo set /a card%count%[VALUE]=8 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==9 echo set /a card%count%[VALUE]=9 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==10 echo set /a card%count%[VALUE]=10 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==Jack echo set /a card%count%[VALUE]=11 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==Queen echo set /a card%count%[VALUE]=12 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==King echo set /a card%count%[VALUE]=13 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==Ace echo set /a card%count%[VALUE]=14 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
+	if !id!==2 echo set /a card%count%.value=2 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==3 echo set /a card%count%.value=3 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==4 echo set /a card%count%.value=4 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==5 echo set /a card%count%.value=5 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==6 echo set /a card%count%.value=6 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==7 echo set /a card%count%.value=7 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==8 echo set /a card%count%.value=8 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==9 echo set /a card%count%.value=9 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==10 echo set /a card%count%.value=10 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==Jack echo set /a card%count%.value=11 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==Queen echo set /a card%count%.value=12 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==King echo set /a card%count%.value=13 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==Ace echo set /a card%count%.value=14 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
 
 )
 
 if /i "%mod%"=="Golf" (
 
-	if !id!==2 echo set /a card%count%[VALUE]=-2 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==3 echo set /a card%count%[VALUE]=3 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==4 echo set /a card%count%[VALUE]=4 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==5 echo set /a card%count%[VALUE]=5 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==6 echo set /a card%count%[VALUE]=6 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==7 echo set /a card%count%[VALUE]=7 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==8 echo set /a card%count%[VALUE]=8 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==9 echo set /a card%count%[VALUE]=9 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==10 echo set /a card%count%[VALUE]=10 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==Jack echo set /a card%count%[VALUE]=10 >>%path%Deck.bat && echo set "card%count%[POWER]=peek" >>%path%Deck.bat
-	if !id!==Queen echo set /a card%count%[VALUE]=10 >>%path%Deck.bat && echo set "card%count%[POWER]=swap" >>%path%Deck.bat
-	if !id!==King echo set /a card%count%[VALUE]=0 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==Ace echo set /a card%count%[VALUE]=1 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
+	if !id!==2 echo set /a card%count%.value=-2 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==3 echo set /a card%count%.value=3 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==4 echo set /a card%count%.value=4 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==5 echo set /a card%count%.value=5 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==6 echo set /a card%count%.value=6 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==7 echo set /a card%count%.value=7 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==8 echo set /a card%count%.value=8 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==9 echo set /a card%count%.value=9 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==10 echo set /a card%count%.value=10 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==Jack echo set /a card%count%.value=10 >>%path%Deck.bat && echo set "card%count%.power=peek" >>%path%Deck.bat
+	if !id!==Queen echo set /a card%count%.value=10 >>%path%Deck.bat && echo set "card%count%.power=swap" >>%path%Deck.bat
+	if !id!==King echo set /a card%count%.value=0 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==Ace echo set /a card%count%.value=1 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
 
 )
 
 if /i "%mod%"=="Battle" (
 
-	if !id!==2 echo set /a card%count%[VALUE]=-2 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==3 echo set /a card%count%[VALUE]=3 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==4 echo set /a card%count%[VALUE]=4 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==5 echo set /a card%count%[VALUE]=5 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==6 echo set /a card%count%[VALUE]=6 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==7 echo set /a card%count%[VALUE]=7 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==8 echo set /a card%count%[VALUE]=8 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==9 echo set /a card%count%[VALUE]=9 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==10 echo set /a card%count%[VALUE]=10 >>%path%Deck.bat && echo set "card%count%[POWER]=n/a" >>%path%Deck.bat
-	if !id!==Jack echo set /a card%count%[VALUE]=10 >>%path%Deck.bat && echo set "card%count%[POWER]=counter" >>%path%Deck.bat
-	if !id!==Queen echo set /a card%count%[VALUE]=10 >>%path%Deck.bat && echo set "card%count%[POWER]=defense" >>%path%Deck.bat
-	if !id!==King echo set /a card%count%[VALUE]=0 >>%path%Deck.bat && echo set "card%count%[POWER]=attack" >>%path%Deck.bat
-	if !id!==Ace echo set /a card%count%[VALUE]=1 >>%path%Deck.bat && echo set "card%count%[POWER]=endurance" >>%path%Deck.bat
+	if !id!==2 echo set /a card%count%.value=-2 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==3 echo set /a card%count%.value=3 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==4 echo set /a card%count%.value=4 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==5 echo set /a card%count%.value=5 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==6 echo set /a card%count%.value=6 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==7 echo set /a card%count%.value=7 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==8 echo set /a card%count%.value=8 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==9 echo set /a card%count%.value=9 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==10 echo set /a card%count%.value=10 >>%path%Deck.bat && echo set "card%count%.power=n/a" >>%path%Deck.bat
+	if !id!==Jack echo set /a card%count%.value=10 >>%path%Deck.bat && echo set "card%count%.power=counter" >>%path%Deck.bat
+	if !id!==Queen echo set /a card%count%.value=10 >>%path%Deck.bat && echo set "card%count%.power=defense" >>%path%Deck.bat
+	if !id!==King echo set /a card%count%.value=0 >>%path%Deck.bat && echo set "card%count%.power=attack" >>%path%Deck.bat
+	if !id!==Ace echo set /a card%count%.value=1 >>%path%Deck.bat && echo set "card%count%.power=endurance" >>%path%Deck.bat
 
 )
 
@@ -195,23 +203,23 @@ exit /b 0
 
 :AddJoker
 
-echo set "card%count%[NAME]=!id!" >>%path%Deck.bat
-echo set "card%count%[ID]=!id!" >>%path%Deck.bat
-echo set "card%count%[SUIT]=!id!" >>%path%Deck.bat
-echo set /a card%count%[VALUE]=0 >>%path%Deck.bat
-if /i "%mod%"=="Golf" echo set "card%count%[POWER]=Shuffle" >>%path%Deck.bat
-if /i "%mod%"=="Battle" echo set "card%count%[POWER]=extra" >>%path%Deck.bat
-echo. >>%path%Deck.bat
+	echo set "card%count%[NAME]=!id!" >>%path%Deck.bat
+	echo set "card%count%[ID]=!id!" >>%path%Deck.bat
+	echo set "card%count%[SUIT]=!id!" >>%path%Deck.bat
+	echo set /a card%count%.value=0 >>%path%Deck.bat
+	if /i "%mod%"=="Golf" echo set "card%count%.power=Shuffle" >>%path%Deck.bat
+	if /i "%mod%"=="Battle" echo set "card%count%.power=extra" >>%path%Deck.bat
+	echo. >>%path%Deck.bat
 
 exit /b 0
 
 :AddBlank
 
-echo set "card%count%[NAME]=!id!" >>%path%Deck.bat
-echo set "card%count%[ID]=!id!" >>%path%Deck.bat
-echo set "card%count%[SUIT]=!id!" >>%path%Deck.bat
-echo set /a card%count%[VALUE]=0 >>%path%Deck.bat
-if /i "%mod%"=="Golf" echo set "card%count%[POWER]=EndGame" >>%path%Deck.bat
-echo. >>%path%Deck.bat
+	echo set "card%count%[NAME]=!id!" >>%path%Deck.bat
+	echo set "card%count%[ID]=!id!" >>%path%Deck.bat
+	echo set "card%count%[SUIT]=!id!" >>%path%Deck.bat
+	echo set /a card%count%.value=0 >>%path%Deck.bat
+	if /i "%mod%"=="Golf" echo set "card%count%.power=EndGame" >>%path%Deck.bat
+	echo. >>%path%Deck.bat
 
 exit /b 0
