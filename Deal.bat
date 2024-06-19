@@ -12,6 +12,8 @@ set /a cardAmount=%~2
 set "path=%~3"
 set "deck=%~4"
 
+call %path%
+
 echo Now dealing %cardAmount% card^(s^) to %playerAmount% player^(s^)
 
 call %deck%
@@ -20,6 +22,7 @@ set /a deckCounter=0
 for /l %%a in (1,1,%cardAmount%) do call :ToPlayer %%a
 for /l %%a in (1,1,%playerAmount%) do echo set /a player%%a.cardAmount=%cardAmount% >>%path%
 echo set /a deckCounter=%deckCounter% >>%path%
+echo. >>%path%
 exit /b 0
 
 :ToPlayer
