@@ -4,8 +4,8 @@ setlocal enabledelayedexpansion
 ::Arguments
 :: 1 Amount of players
 :: 2 Amount of cards to each player
-:: 3 Path to gamelog to write the cards
-:: 4 Path to the folder with the deck
+:: 3 Gamelog bat file
+:: 4 Deck bat file
 
 set /a playerAmount=%~1
 set /a cardAmount=%~2
@@ -21,6 +21,7 @@ for /l %%a in (1,1,%cardAmount%) do call :ToPlayer %%a
 for /l %%a in (1,1,%playerAmount%) do echo set /a player%%a.cardAmount=%cardAmount% >>%path%
 
 echo set /a deckCounter=%deckCounter% >>%path%
+echo set /a totalPlayers=%playerAmount% >>%path%
 echo. >>%path%
 exit /b 0
 

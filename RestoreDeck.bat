@@ -10,7 +10,8 @@ setlocal enabledelayedexpansion
 set "deckLog=%~1"
 set "discardPile=%~2"
 set "gameLog=%~3"
-set /a maxNum=%~4
+set /a discardCounter=%~4
+set /a maxNum=%discardCounter%+1
 
 call %discardPile%
 
@@ -27,6 +28,10 @@ break>%discardPile%
 echo @echo off >>%discardPile%
 echo. >>%discardPile%
 echo set /a discardCounter=0 >>%gameLog%
+echo set /a deckCounter=0 >>%gameLog%
+
+call %~dp0RefreshGameLog.bat %gameLog%
+
 exit /b 0
 
 :loop
