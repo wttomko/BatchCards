@@ -1,144 +1,62 @@
 @echo off
-
-echo Welcome to Batch Cards. Pressing Enter will setup the paths and .BAT files for card games.
-echo Path to view these files will be in Logs\TestFolder
-pause > nul
+setlocal enabledelayedexpansion
 
 set "gameLog=Logs\TestFolder\gameLog.bat"
 set "deckLog=Logs\TestFolder\Deck.bat"
 set "discardLog=Logs\TestFolder\DiscardPile.bat"
 
+echo This test creates a normal deck of 52 cards,
+echo and deals 7 cards to 2 players.
+pause
+echo.
+echo the deck creation and deal features
+echo can be altered outside this test BAT file.
+echo.
+pause
+
 break>%gameLog%
+break>%deckLog%
+break>%discardLog%
 echo @echo off >>%gameLog%
-cls
-echo For now, just the game log should be visible.
-echo Pressing enter now will create and shuffle the deck. 
-echo You will then have the deck and discard pile .BAT files
 
-pause > nul
+set "testPath=Logs\TestFolder\"
 
-call Modules\CreateDeck.bat Normal Logs\TestFolder\
-pause
-
-cls 
-echo With the deck created, Modules\Deal.bat will be called,
-echo dealing 7 cards to 2 players.
-echo.
-echo These cards will be recorded in the gamelog .BAT file
-pause > nul
-
+call Modules\CreateDeck.bat Normal %testPath%
 call Modules\Deal.bat 2 7 %gameLog% %deckLog%
-pause
 
-cls 
-echo Lets display both players hands,
-echo Feel free to double check the cards in the gamelog
-echo.
-pause
+:MAIN_MENU
 call %gameLog%
 cls
-echo Player 1
+for /l %%a in (1,1,%totalPlayers%) do (
+    echo Player %%a
+    echo.
+    call Modules\DisplayHand.bat %%a !player%%a.cardAmount! Name
+    echo.
+)
+echo -----------------------------------------
+echo You are player 1 for testing purposes. 
+echo Enter a number to test its function.
 echo.
-call Modules\DisplayHand.bat 1 %player1.cardAmount% Name
-echo.
-echo Player 2
-echo.
-call Modules\DisplayHand.bat 2 %player2.cardAmount% Name
-echo.
-pause
+echo [1] Draw Card
+echo [2] Discard a card
+echo [3] Shuffle hand
+echo [4] Swap card
 
-cls 
-echo Lets have player 1 draw a card, then discard their card 4
-echo.
-pause
+choice /c 1234 /n
 
-call Modules\DrawCard.bat 1 %gameLog% %deckCounter% %deckLog%
-echo.
-echo Card was drawn...
-echo.
-call %gameLog%
-pause
-call Modules\Discard.bat 1 4 %gameLog% %player1.cardAmount% %discardCounter% %discardLog%
-echo.
-echo card was discarded.
-echo.
-pause
-call %gameLog%
-cls
-echo Player 1 cards now..
-echo.
-call Modules\DisplayHand.bat 1 %player1.cardAmount% Name
-echo.
-pause
-
-cls
-echo Pressing enter will swap player 1 card 5 with player 2 card 3
-echo.
-pause
-cls
-call Modules\Swap.bat 1 2 5 3 %gameLog%
-echo.
-echo Swapped. 
-echo.
-pause
-call %gameLog%
-cls
-echo Player 1 cards now..
-echo.
-call Modules\DisplayHand.bat 1 %player1.cardAmount% Name
-echo.
-echo Player 2 cards now..
-echo.
-call Modules\DisplayHand.bat 2 %player2.cardAmount% Name
-echo.
-pause
-
-cls 
-echo Using a loop, player 2 is going to draw a card, 
-echo and discard their card 2 into the discard pile until 
-echo the deck runs out. 
-echo.
-pause
+if %errorlevel%==4 call :SWAP && goto MAIN_MENU
 
 
-set /a counter=%deckCounter%+1
-for /l %%a in (%counter%,1,%deck.totalCards%) do call :DrawCard && call :Discard
-
+:SWAP
 echo.
-echo Check the game log
-pause
-
-cls 
-echo the discard pile has 38 cards. and heave player has 7.
-echo total of still 52 cards.
-pause > nul
-cls
-echo Pressing enter again will restore the deck and also 
-echo refresh the game log, getting rid of unnecessary lines.
+echo Enter a card number of yours to Swap
+set /p "choice="
+set /a p1Num=%choice%
 echo.
-echo It is recommended you open all 3 bat files now in edit mode
-echo to see a before/after
-echo.
-pause
+echo Enter a card to take from player 2
+set /p "choice="
+set /a p2Num=%choice%
 
-call Modules\RestoreDeck.bat %deckLog% %discardLog% %gameLog%
+if exist !player1.card%p1Num%.name! if exist !player2.card%p2Num%.name! call Modules\Swap.bat 1 2 %p1Num% %p2Num% %gameLog%
 
-echo.
-echo Restored. Check the logs to compare
-echo.
-pause
 
-del Logs\TestFolder\*.bat
-exit /b 0
-
-::FUNCTIONS //////////////////////////////////////////////////////////////////////
-
-:DrawCard
-call %gameLog%
-call Modules\DrawCard.bat 2 %gameLog% %deckCounter% %deckLog%
-exit /b 0
-
-:Discard
-call %gameLog%
-call Modules\Discard.bat 2 2 %gameLog% %player2.cardAmount% %discardCounter% %discardLog%
-exit /b 0
