@@ -3,21 +3,21 @@ setlocal enabledelayedexpansion
 
 ::Arguments
 :: 1 player number - set this to 0 to not automatically assign the card
-:: path to gamelog
-:: path to deck
+:: 2 path to gamelog
+:: 3 deckcounter variable
+:: 4 deck bat file
 
 set /a player=%~1
 set "gameLog=%~2"
-set "deckLog=%~3"
+set /a deckCounter=%~3
 
-call %deckLog%
-call %gameLog%
 
 set /a deckCounter+=1
 echo set /a deckCounter+=1 >>%gameLog%
 
 if %player% NEQ 0 (
     set /a player%player%.cardAmount+=1
+    echo. >>%gameLog%
     echo set /a player%player%.cardAmount+=1  >>%gameLog%
     echo set "player%player%.card!player%player%.cardAmount!.name=!card%deckCounter%.name!" >>%gameLog%
     echo set "player%player%.card!player%player%.cardAmount!.id=!card%deckCounter%.id!" >>%gameLog%
@@ -28,6 +28,7 @@ if %player% NEQ 0 (
 )
 
 if %player%==0 (
+    echo. >>%gameLog%
     echo set "newCard.name=!card%deckCounter%.name!" >>%gameLog%
     echo set "newCard.id=!card%deckCounter%.id!" >>%gameLog%
     echo set "newCard.suit=!card%deckCounter%.suit!" >>%gameLog%

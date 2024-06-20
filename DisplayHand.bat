@@ -4,15 +4,11 @@ setlocal enabledelayedexpansion
 ::Arguments
 ::1 Player num
 ::2 total cards
-::3 Game log
-::4 Style - Name, Short
+::3 Style - Name, Short
 
 set /a player=%~1
 set /a total=%~2
-set "gameLog=%~3"
-set "style=%~4"
-
-call %gameLog%
+set "style=%~3"
 
 if /i "%style%"=="Name" (
     for /l %%a in (1,1,%total%) do echo [%%a] !player%player%.card%%a.name!

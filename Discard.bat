@@ -1,48 +1,49 @@
 @echo off
 setlocal enabledelayedexpansion
 
-::Arguments
-::1 Player number - set this to 0 if discarding the new card
-::2 Card Number - also set to 0 if discarding the new card
-::3 game log path
-::4 discard bat file
-::5 Total player cards - 0 if discarding new card
+::ARGUMENTS
+:: 1 - Player number who is descarding - Make this 0 to discard New Card
+:: 2 - Card Number they are discarding
+:: 3 - Game Log bat file
+:: 4 - Amount of cards the player has
+:: 5 - DiscardCounter
+:: 6 - Discard bat file
 
-set /a player=%~1
-set /a cardNum=%~2
+set /a playerNumber=%~1
+set /a cardNumber=%~2
 set "gameLog=%~3"
-set "discardPile=%~4"
-set /a totalPlayerCards=%~5
+set /a cardAmount=%~4
+set /a disCounter=%~5
+set "discardPile=%~6"
 
-call %gameLog%
-call %discardPile%
-
-set /a discardCounter+=1
+set /a disCounter+=1
 echo set /a discardCounter+=1 >>%gameLog%
+echo. >>%gameLog%
 
-if %player%==0 (
-    echo set "discardPile.card%discardCounter%.name=!newCard.name!" >>%discardPile%
-    echo set "discardPile.card%discardCounter%.id=!newCard.id!" >>%discardPile%
-    echo set "discardPile.card%discardCounter%.suit=!newCard.suit!" >>%discardPile%
-    echo set /a discardPile.card%discardCounter%.value=!newCard.value! >>%discardPile%
-    echo set "discardPile.card%discardCounter%.power=!newCard.power!" >>%discardPile%
+if %playerNumber%==0 (
+    echo set "discard.card%disCounter%.name=!newCard.name!" >>%discardPile%
+    echo set "discard.card%disCounter%.id=!newCard.id!" >>%discardPile%
+    echo set "discard.card%disCounter%.suit=!newCard.suit!" >>%discardPile%
+    echo set /a discard.card%disCounter%.value=!newCard.value! >>%discardPile%
+    echo set "discard.card%disCounter%.power=!newCard.power!" >>%discardPile%
+    echo. >>%discardPile%
 )
 
-if %player% NEQ 0 (
-    echo set "discardPile.card%discardCounter%.name=!player%player%.card%cardNum%.name!" >>%discardPile%
-    echo set "discardPile.card%discardCounter%.id=!player%player%.card%cardNum%.id!" >>%discardPile%
-    echo set "discardPile.card%discardCounter%.suit=!player%player%.card%cardNum%.suit!" >>%discardPile%
-    echo set /a discardPile.card%discardCounter%.value=!player%player%.card%cardNum%.value! >>%discardPile%
-    echo set "discardPile.card%discardCounter%.power=!player%player%.card%cardNum%.power!" >>%discardPile%
+if %playerNumber% NEQ 0 (
+    echo set "discard.card%disCounter%.name=!player%playerNumber%.card%cardNumber%.name!" >>%discardPile%
+    echo set "discard.card%disCounter%.id=!player%playerNumber%.card%cardNumber%.id!" >>%discardPile%
+    echo set "discard.card%disCounter%.suit=!player%playerNumber%.card%cardNumber%.suit!" >>%discardPile%
+    echo set /a discard.card%disCounter%.value=!player%playerNumber%.card%cardNumber%.value! >>%discardPile%
+    echo set "discard.card%disCounter%.power=!player%playerNumber%.card%cardNumber%.power!" >>%discardPile%
+    echo. >>%discardPile%
+)
 
-    echo set "player%player%.card%cardNum%.name=!player%player%.card%totalPlayerCards%.name!" >>%gameLog%
-    echo set "player%player%.card%cardNum%.id=!player%player%.card%totalPlayerCards%.id!" >>%gameLog%
-    echo set "player%player%.card%cardNum%.suit=!player%player%.card%totalPlayerCards%.suit!" >>%gameLog%
-    echo set /a player%player%.card%cardNum%.value=!player%player%.card%totalPlayerCards%.value! >>%gameLog%
-    echo set "player%player%.card%cardNum%.power=!player%player%.card%totalPlayerCards%.power!" >>%gameLog%
+if %playerNumber% NEQ 0 (
+    echo set "player%playerNumber%.card%cardNumber%.name=!player%playerNumber%.card%cardAmount%.name!" >>%gameLog%
+    echo set "player%playerNumber%.card%cardNumber%.id=!player%playerNumber%.card%cardAmount%.id!" >>%gameLog%
+    echo set "player%playerNumber%.card%cardNumber%.suit=!player%playerNumber%.card%cardAmount%.suit!" >>%gameLog%
+    echo set /a player%playerNumber%.card%cardNumber%.value=!player%playerNumber%.card%cardAmount%.value! >>%gameLog%
+    echo set "player%playerNumber%.card%cardNumber%.power=!player%playerNumber%.card%cardAmount%.power!" >>%gameLog%
     echo. >>%gameLog%
-    echo set /a player%player%.cardAmount-=1 >>%gameLog%
+    echo set /a player%playerNumber%.cardAmount-=1 >>%gameLog%
 )
-
-echo. >>%discardPile%
-exit /b 0
