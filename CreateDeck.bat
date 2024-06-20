@@ -63,6 +63,7 @@ echo ========================
 
 for %%a in (Hearts Clubs Spades Diamonds) do call :Create "%%a"
 echo set /a discardCounter=0 >>%gameLog%
+echo set /a deck.totalCards=%maxNum% >>%gameLog%
 del %path%%ran%AlreadyChosen.txt
 
 
